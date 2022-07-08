@@ -9,6 +9,8 @@ function App() {
   const [color, setColor] = useState("");
   const [limit] = useState(60);
   const [loading, setLoading] = useState(false);
+  const [isDarkMode, setIsDarkMode] = useState(false);
+
   const search = async (e) => {
     e.preventDefault();
     setLoading(true);
@@ -32,11 +34,32 @@ function App() {
     setLoading(false);
   };
 
+  const openImage = (platform, name) => {
+    window.open(`https://img.icons8.com/${platform}/${size}/${color.length > 0 ? color : "000000"}/${name}.png`)
+  }
+
   return (
     <div className="container">
-      <form onSubmit={search} class="mb-4">
-        <h3 class="is-size-3">IconsPro Search</h3>
-        <div class="field is-grouped">
+      <div class="mb-4">
+        <div className="level py-4">
+          <div className="level-left">
+            <div className="level-item">
+
+              <h3 class="is-size-3">IconsPro Search</h3>
+            </div>
+          </div>
+          <div className="level-right">
+            <div className="level-item">
+
+              <label class="checkbox subtitle">
+                Not seeing anything? Try dark mode
+                <input type="checkbox" className="ml-2" checked={isDarkMode} onClick={e => setIsDarkMode(e.target.checked)}/>
+              </label>
+            </div>
+          </div>
+        </div>
+
+        <form class="field is-grouped" onSubmit={search}>
           <p className="control is-expanded">
             <input
               class="input"
@@ -69,27 +92,30 @@ function App() {
             />
           </div>
           <p class="control">
-            <a class="button is-info" onClick={search}>
-              Search
-            </a>
+            <input type='submit' class="button is-info" />
           </p>
-        </div>
-      </form>
+        </form>
+      </div>
 
-      {results.map((item, index) => (
-        <a
-          class="m-4"
-          href={`https://img.icons8.com/${item["platform"]}/${size}/${color}/${item["commonName"]}.png`}
-          target="_blank"
-        >
-          <img
-            src={`https://img.icons8.com/${item["platform"]}/64/${
-              color.length > 0 ? color : "000000"
-            }/${item["commonName"]}.png`}
-            alt={item["id"]}
-          />
-        </a>
-      ))}
+      <div className='columns is-mobile is-multiline is-1'>
+        {results.map((item, index) => (
+          <div className='column is-3-mobile is-2-tablet is-1-desktop ' key={index}>
+            <div className={`card is-clickable ${isDarkMode && 'has-background-dark'}`} onClick={() => openImage(item["platform"], item["commonName"])}>
+              <div className="card-image p-3">
+                <figure className="image is-square">
+                  <img
+                    src={`https://img.icons8.com/${item["platform"]}/128/${color.length > 0 ? color : "000000"
+                      }/${item["commonName"]}.png`}
+                    alt={item["id"]}
+                  />
+                </figure>
+
+              </div>
+            </div>
+          </div>
+        ))}
+      </div>
+
 
       {loading && (
         <div className="py-4">
@@ -105,8 +131,8 @@ function App() {
         </button>
       )}
       <footer>
-        <div className="content has-text-centered">
-          <p>Icons from icons8.com</p>
+        <div className="content has-text-centered py-4">
+          <p>Icons from <a href="https://icons8.com/">icons8.com</a></p>
         </div>
       </footer>
     </div>
